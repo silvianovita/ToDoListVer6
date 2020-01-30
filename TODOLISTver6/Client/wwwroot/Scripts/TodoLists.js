@@ -78,15 +78,10 @@ $(document).ready(function () {
 //        }
 //    });
 //}
-function changeFunc() {
-    debugger;
-    var selectBox = document.getElementById("selectedChange");
-    var selectedValue = selectBox.value;
-    if (selectedValue != null) {
-        alert(selectedValue);
-        table.ajax.url("/User/List/" + selectedValue).load();
-    }
-}
+$('#selectedChange').change(function () {
+    //alert(selectedValue);
+    table.ajax.url("/User/List/" + $('#selectedChange').val()).load();
+});
 function getJSessionId() {
     var jsId = document.cookie.match(/JSESSIONID=[^;]+/);
     if (jsId != null) {
