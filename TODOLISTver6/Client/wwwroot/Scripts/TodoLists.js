@@ -1,13 +1,25 @@
 ﻿var table;
 $(document).ready(function () {
+    debugger;
     var Status = $('#selectedChange').val();
-    var no = 1;
-    
+    $('#TodolistData').on('keyup', function () {
+        table
+            .columns(3)
+            .search(this.value)
+            .draw();
+    });
     table = $("#TodolistData").DataTable({
+        "responsive": false,
+        "serverside": true,
+        "columnDefs": [{
+            "targets": [0, 3],
+            "orderable": false,
+            "searchable": false
+        }],
         ajax: {
-            url: "/User/List",
+            url: "/User/List/" + Status,
             type: "GET",
-            data: { status: $('#selectedChange').val() }
+            //data: { status: $('#selectedChange').val() }
         },
         "columns": [
             {
@@ -15,26 +27,31 @@ $(document).ready(function () {
                     if (row.status == false) {
                         return '<button type="button" class="btn btn-secondary" id="Edit" onclick="return UpdateStatus(' + row.id + ')"><i class="fa fa-square-o" title="Checklist"></i></button>';
                     } else {
-                        return '<button type="button" class="btn btn-secondary" id="Edit" onClick="return UncheckStatus('+row.id+')"><i class="fa fa-check-square-o" title="Unchecklist"></i></button>';
+                        return '<button type="button" class="btn btn-secondary" id="Edit" onClick="return UncheckStatus(' + row.id + ')"><i class="fa fa-check-square-o" title="Unchecklist"></i></button>';
                     }
                     //return '<button type="button" class="btn btn-secondary" id="Edit" onclick="return UpdateStatus(' + row.Id + ')"><i class="fa fa-square-o" title="Checklist"></i></button>';
                 }
             },
-            {
-                "render": function () {
-                    return no++;
-                }
-            },
 
             { "data": "name" },
-            { "data": "status" },
+            {
+                "render": function (data, type, row) {
+                    if (row.status == 0) {
+                        return 'Active'
+                    }
+                    else {
+                        return 'Complete';
+                    }
+                }
+            },
+            //{ "data": "status" },
             {
                 "render": function (data, type, row) {
                     return '<button type="button" class="btn btn-warning" id="Edit" onclick="return GetById(' + row.id + ')"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></button> ' +
                         '<button type = "button" class="btn btn-danger" id="Delete" onclick="return Delete(' + row.id + ')" ><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></button >';
                 }
             }
-        ] 
+        ]
     });
     //$('#TodolistData').dataTable({
     //    "aoColumns": [{ "bSortable": false }, null, null, null, { "bSortable": false }],
